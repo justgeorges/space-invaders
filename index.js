@@ -83,7 +83,9 @@ class SpaceShip extends GameObject {
         this.x + this.width / 2 - this.bulletWidth / 2,
         this.y - this.bulletHeight,
         this.bulletWidth,
-        this.bulletHeight
+        this.bulletHeight,
+        this.bulletColor,
+        dy
       )
     );
   }
@@ -171,62 +173,6 @@ game.enemyDirection = 1;
 // The number of steps an enemy takes down
 // on the y axis when one of the sides is reached.
 game.enemyStep = 5;
-
-game.init = function () {
-  //game loop
-  game.interval = setInverval(game.update, 1000 / 60);
-
-  //player
-  game.player = new Player(
-    game.canvas.width / 2 - 50,
-    game.canvas.height - 50,
-    20,
-    20,
-    "#0099CC",
-    game.canvas.width
-  );
-
-  //setup asteroids
-  game.asteroids = [];
-  for (var i = 0; i < game.noOfAsteroids; i++) {
-    game.asteroids.push(
-      new Asteroid(
-        game.asteroidsSpace + i * game.asteroidsSpace,
-        game.canvas.height - 180,
-        5,
-        5,
-        "#ffffff",
-        game.asteroidsParts
-      )
-    );
-  }
-
-  //setup enemies
-  game.enemies = [];
-  for (var i = 0; i < game.enemyLines; i++) {
-    for (var j = 0; j < game.enemiesEachLine; j++) {
-      game.enemies.push(
-        new SpaceShip(
-          game.enemySpace + j * game.enemySpace,
-          game.enemySpace + i * game.enemySpace,
-          20,
-          20,
-          "#FF0000"
-        )
-      );
-    }
-  }
-};
-
-game.keydown = function (e) {
-  if (e.key == "ArrowLeft" || e.key == "a") {
-    game.player.update(5, 0);
-  } else if (e.key == "ArrowRight" || e.key == "d") {
-    game.player.update(0, 5);
-  } else if (e.key == "Space") {
-    player.shoot(-5);
-  }
-};
 
 // game loop function
 game.update = function () {
@@ -350,11 +296,60 @@ game.update = function () {
 };
 
 //  key events
-game.keydown = function (e) {};
-
+game.keydown = function (e) {
+  if (e.which == 37) {
+    game.player.update(-5, 0);
+  } else if (e.which == 39) {
+    game.player.update(5, 0);
+  } else if (e.which == 32) {
+    game.player.shoot(-5);
+  }
+};
 // inital event
 game.init = function () {
+  //game loop
   game.interval = setInterval(game.update, 1000 / 60);
+
+  //player
+  game.player = new Player(
+    game.canvas.width / 2 - 50,
+    game.canvas.height - 50,
+    20,
+    20,
+    "#0099CC",
+    game.canvas.width
+  );
+
+  //setup asteroids
+  game.asteroids = [];
+  for (var i = 0; i < game.noOfAsteroids; i++) {
+    game.asteroids.push(
+      new Asteroid(
+        game.asteroidsSpace + i * game.asteroidsSpace,
+        game.canvas.height - 180,
+        5,
+        5,
+        "#ffffff",
+        game.asteroidsParts
+      )
+    );
+  }
+
+  //setup enemies
+  game.enemies = [];
+  for (var i = 0; i < game.enemyLines; i++) {
+    for (var j = 0; j < game.enemiesEachLine; j++) {
+      game.enemies.push(
+        new SpaceShip(
+          game.enemySpace + j * game.enemySpace,
+          game.enemySpace + i * game.enemySpace,
+          20,
+          20,
+          "#FF0000"
+        )
+      );
+    }
+  }
 };
 
 // ends the game
