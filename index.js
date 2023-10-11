@@ -49,7 +49,7 @@ class Bullet extends GameObject {
     this.dy = dy;
   }
 
-  update(x, y) {
+  update(dx, dy) {
     this.y += this.dy;
   }
 }
@@ -229,35 +229,31 @@ game.keydown = function (e) {
 };
 
 // game loop function
-game.update = function() {
-  // Draw canvas background
+game.update = function () {
   game.ctx.fillStyle = game.backgroundColor;
   game.ctx.fillRect(0, 0, game.canvas.width, game.canvas.height);
 
-  // Draw player
+  //creates player
   game.player.draw(game.ctx);
 
-  // Draw asteroids
+  //draw asteroids
   for (var i = 0; i < game.asteroids.length; i++) {
     game.asteroids[i].draw(game.ctx);
   }
 
-  // Draw enemies
+  //draw enemies
   for (var i = 0; i < game.enemies.length; i++) {
     game.enemies[i].draw(game.ctx);
     game.enemies[i].update(game.enemyDirection, 0);
   }
 
-  // Check if the player has destroyed all enemies
+  // check if player has destoyed all enemies
   if (game.enemies.length == 0) {
-    // Reset the game
     game.restart();
   }
 
-  // Check if the enemies are out of bounds.
-  if (game.enemyDirection == 1)
-  {
-    // Find the enemy closest to the right side of the screen
+  //check if enemies are out of bounds
+  if (game.enemyDirection == 1) {
     var closestToRightSideEnemy = game.enemies[0];
     for (var i = 1; i < game.enemies.length; i++) {
       if (game.enemies[i].x > closestToRightSideEnemy.x) {
@@ -265,21 +261,17 @@ game.update = function() {
       }
     }
 
-    // Check if the enemy closest to the right side of
-    // the screen has reached the right side of the screen.
-    if (closestToRightSideEnemy.x +
-        closestToRightSideEnemy.width > game.canvas.width) {
-      // Reverse the direction of the enemies.
+    if (
+      closestToRightSideEnemy.x + closestToRightSideEnemy.width >
+      game.canvas.width
+    ) {
       game.enemyDirection = -1;
-      // Move the enemies down.
+
       for (var i = 0; i < game.enemies.length; i++) {
         game.enemies[i].update(0, game.enemyStep);
       }
     }
-  }
-  else if (game.enemyDirection == -1)
-  {
-    // Find the enemy closest to the left side of the screen
+  } else if (game.enemyDirection == -1) {
     var closestToLeftSideEnemy = game.enemies[0];
     for (var i = 1; i < game.enemies.length; i++) {
       if (game.enemies[i].x < closestToLeftSideEnemy.x) {
@@ -287,38 +279,33 @@ game.update = function() {
       }
     }
 
-    // Check if the enemy closest to the left side of
-    // the screen has reached the left side of the screen.
     if (closestToLeftSideEnemy.x < 0) {
-      // Reverse the direction of the enemies.
       game.enemyDirection = 1;
-      // Move the enemies down.
       for (var i = 0; i < game.enemies.length; i++) {
         game.enemies[i].update(0, game.enemyStep);
       }
     }
   }
 
-  // Enemy fire counter
+  //enemy fire counter
   game.enemyFireTimer += Math.random() * 10;
   if (game.enemyFireTimer > game.enemyFireRate) {
     game.enemyFireTimer = 0;
-    // Fire enemy bullet
+    //fire bullet
     game.enemies[Math.floor(Math.random() * game.enemies.length)].shoot(5);
   }
 
-  // Check if player bullet collides with asteroid
+  //check for player bullet collision
   for (var i = 0; i < game.player.bullets.length; i++) {
     for (var j = 0; j < game.asteroids.length; j++) {
-      if (game.asteroids[j].collidesWith(game.player.bullets[i])) {
-        game.asteroids[j].removeOnCollide(game.player.bullets[i]);
+      if (game.asteroids[j].removeOnCollide(game.player.bullets[i])) {
         game.player.bullets.splice(i, 1);
         break;
       }
     }
   }
 
-  // Check if enemy bullet collides with asteroid
+  //check if enemy bullet collides with asteroid
   for (var i = 0; i < game.enemies.length; i++) {
     for (var j = 0; j < game.enemies[i].bullets.length; j++) {
       for (var k = 0; k < game.asteroids.length; k++) {
@@ -331,7 +318,7 @@ game.update = function() {
     }
   }
 
-  // Check if player bullet collides with enemy
+  //check if player bullet collides with enemy
   for (var i = 0; i < game.player.bullets.length; i++) {
     for (var j = 0; j < game.enemies.length; j++) {
       if (game.enemies[j].collidesWith(game.player.bullets[i])) {
@@ -360,7 +347,7 @@ game.update = function() {
       break;
     }
   }
-}
+};
 
 //  key events
 game.keydown = function (e) {};
